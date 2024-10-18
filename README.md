@@ -1,23 +1,29 @@
-Are you apprehensive of exposing your QNAP to the world by poking a
+# Why
+
+- Are you apprehensive of exposing your QNAP to the world by poking a
 hole in your firewall that exposes the QNAP web server?
 
-Do you want to use a real SSL certificate for your QNAP running behind
-a firewall?
+- Do you want to use a real SSL certificate for your QNAP running
+behind a firewall?
 
-Do you have a custom domain and would like to have something like
+- Do you have a custom domain and would like to have something like
 `qnap.mycustomdomain.com` going to your qnap?
 
-Do you have a firewall that's capable of running a Dynamic DNS service
-that can update your domain name registrar with its IP address? (If
-not, consider using pfSense, OPNsense or something else.)
+- Do you have a firewall that's capable of running a Dynamic DNS
+service that can update your domain name registrar with its IP
+address? (If not, consider using pfSense, OPNsense or something else.)
 
 If so, this solution might work for you.
 
+# What
+
 The setup described here lets you generate a Let's Encrypt signed SSL
 certificate for your QNAP system, instead of using the self-signed
-certificate used by default on your machine.
+certificate used by default on your machine. This solution does not
+require you to expose your QNAP to the Internet by opening a port in
+your firewall.
 
-= Setup
+# Setup
 
 0. Decide on the machine name of your QNAP system that you're going to
    use. In the following description I'm going to use
