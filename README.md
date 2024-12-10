@@ -48,40 +48,26 @@ By doing the above steps, any machine on the Internet looking up
 same time any machine inside your network looking up the same host
 will resolve to the intranet IP address of your QNAP system.
 
-1. Ssh into your QNAP system. Create a directory to store the certificate.
+1. Ssh into your QNAP system. These instructions assume you log in as
+   a regular user in QNAP, not as an admin. Howewer this regular user
+   must have the ability to `sudo` as the `admin` user (QNAP uses
+   `admin` as opposed to the more common `root` user on Linux.
+
+Create a directory to store the certificate.
 
 ```
-mkdir /etc/config/apache/ssl
+sudo mkdir /etc/config/apache/ssl
 ```
 
-Create a directory `/acme` that will hold the `acme.sh` installation.
-
-2. Change the configuration of the Apache proxy server running on QNAP
-to use the certificate we're going to obtain from Let's Encrypt.
-
-In the following files:
+Create a directory `~admin/.acme.sh` that will hold the `acme.sh`
+installation. This needs to be created in the `admin`'s home
+directory, not in the regular QNAP user you logged into.
 
 ```
-/etc/default_config/apache-dav-sys-ssl.conf
-/etc/default_config/apache-ssl.conf
-/etc/default_config/apache-sys-proxy-ssl.conf.tplt
-/etc/default_config/apache-sys-proxy-ssl.conf.tplt.def
+sudo mkdir ~admin/.acme.sh
 ```
 
-comment out the line
-
-```
-SSLCertificateFile "/etc/stunnel/stunnel.pem"
-```
-
-and append the following just below it:
-
-```
-SSLCertificateFile "/etc/config/apache/ssl/cert.pem"
-SSLCertificateKeyFile "/etc/config/apache/ssl/key.pem"
-```
-
-3. Create a `config.txt` file next to this README.md file, containing
+2. Create a `config.txt` file next to this README.md file, containing
 the name of the host in your custom domain, and the `acme.sh` settings
 to use the custom DNS API for your DNS provider, according to these
 instructions.
@@ -110,12 +96,12 @@ line argument. Do not add any shell `export` keywords before the name
 of the environment variables, docker parses this file directly and
 will complain it sees them.
 
-4. Run the `renew-cert.sh` script:
+3. Run the `renew-cert.sh` script with admin priviledges:
 
 ```
-./renew-certs.sh
+sudo ./renew-certs.sh
 ```
 
-5. Add `renew-cert.sh` under cron, so that it renews
+4. Add `renew-cert.sh` under cron, so that it renews
    automatically. Run it every day, it won't do anything if the
    certificate is not up for renewal.

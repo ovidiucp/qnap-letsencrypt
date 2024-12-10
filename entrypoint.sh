@@ -11,6 +11,8 @@ echo
 echo Contents of /etc/config/apache/ssl:
 ls -alF /etc/config/apache/ssl
 
+echo Contents of $HOME/.acme.sh/
+ls -alF $HOME/.acme.sh/
 
 # Pass --test to use it with the staging servers.
 
