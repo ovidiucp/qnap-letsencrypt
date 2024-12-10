@@ -7,7 +7,7 @@ RUN (apt-get update; \
 
 ADD entrypoint.sh /entrypoint.sh
 
-ENV EMAIL=ovidiu@gmail.com
+ENV EMAIL=youremail@mydomain.com
 
 RUN curl https://get.acme.sh | sh -s email=$EMAIL
 
