@@ -85,6 +85,7 @@ https://help.dreamhost.com/hc/en-us/articles/4407354972692-Connecting-to-the-Dre
 The `config.txt` file would look like this:
 
 ```
+EMAIL=youremail@yourcustomdomain.com
 HOST=qnap.mycustomdomain.com
 DNSAPI=dns_dreamhost
 DH_API_KEY=XXXXXXXXXXX

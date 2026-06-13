@@ -15,12 +15,16 @@ echo Contents of $HOME/.acme.sh/
 ls -alF $HOME/.acme.sh/
 
 # Pass --test to use it with the staging servers.
+#
+# Pass --force to force the reissue of certificates,
+#   and restarting the web server.
 
 $HOME/.acme.sh/acme.sh \
     --issue \
     --dns $DNSAPI \
     -d $HOST \
     --debug
+
 
 RESULT=$?
 
@@ -32,7 +36,8 @@ if [ $RESULT -eq 0 ]; then
         --install-cert -d $HOST \
         --cert-file /etc/config/apache/ssl/cert.pem \
         --key-file /etc/config/apache/ssl/key.pem \
-        --fullchain-file /etc/config/apache/ssl/fullchain.pem
+        --fullchain-file /etc/config/apache/ssl/fullchain.pem \
+	--test
 
     echo
     echo After certificate generation, contents of /etc/config/apache/ssl:

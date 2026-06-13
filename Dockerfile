@@ -1,8 +1,7 @@
-FROM ubuntu:22.04
-MAINTAINER Ovidiu Predescu <ovidiu@jollyturns.com>
+FROM ubuntu:24.04
 
 RUN (apt-get update; \
-    apt-get install -y curl cron; \
+    apt-get install -y curl ; \
     )
 
 ADD entrypoint.sh /entrypoint.sh
