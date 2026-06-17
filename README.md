@@ -23,6 +23,56 @@ certificate used by default on your machine. This solution does not
 require you to expose your QNAP to the Internet by opening a port in
 your firewall.
 
+# Install git on your QNAP
+
+Git is not shipped on QNAP systems unfortunately. There are multiple
+ways to install git, but I prefer to not give allow untrusted app
+stores on my QNAP.
+
+The simplest way is to run git from Docker container. Just do the following
+
+SSH into your QNAP and become the admin user. Later on you'll need to
+run as admin to regenerate the SSL certificates anyway, so you might
+as well do it now.
+
+
+```
+mkdir -p ~/bin
+cat << 'EOF' >>~/.bashrc
+export PATH=$HOME/bin:$PATH
+EOF
+
+. ~/.bashrc
+
+cat << 'EOF' >>~/bin/git
+#! /bin/sh
+
+docker run -ti --rm -v ${HOME}:/root -v $(pwd):/git alpine/git "$@"
+EOF
+
+chmod a+x ~/bin/git
+```
+
+This pulls in the alpine/git from https://hub.docker.com/r/alpine/git
+
+The Github repository for it is https://github.com/alpine-docker/git
+
+You now have git installed.
+
+# Create a clone of this repository
+
+To create a clone of this repository decide where you want to place
+it. I suggest creating an `src` directory in your admin account:
+
+```
+mkdir -p ~/src
+cd src
+git clone https://github.com/ovidiucp/qnap-letsencrypt
+cd qnap-letsencrypt
+
+```
+
+
 # Setup
 
 0. Decide on the machine name of your QNAP system that you're going to
@@ -48,15 +98,13 @@ By doing the above steps, any machine on the Internet looking up
 same time any machine inside your network looking up the same host
 will resolve to the intranet IP address of your QNAP system.
 
-1. Ssh into your QNAP system. These instructions assume you log in as
-   a regular user in QNAP, not as an admin. Howewer this regular user
-   must have the ability to `sudo` as the `admin` user (QNAP uses
-   `admin` as opposed to the more common `root` user on Linux.
+1. Ssh into your QNAP system. Just as above let's login as admin since
+   it makes life easier.
 
 Create a directory to store the certificate.
 
 ```
-sudo mkdir /etc/config/apache/ssl
+mkdir /etc/config/apache/ssl
 ```
 
 Create a directory `~admin/.acme.sh` that will hold the `acme.sh`
@@ -64,7 +112,7 @@ installation. This needs to be created in the `admin`'s home
 directory, not in the regular QNAP user you logged into.
 
 ```
-sudo mkdir ~admin/.acme.sh
+mkdir ~admin/.acme.sh
 ```
 
 2. Create a `config.txt` file next to this README.md file, containing
@@ -100,9 +148,22 @@ will complain it sees them.
 3. Run the `renew-cert.sh` script with admin priviledges:
 
 ```
-sudo ./renew-certs.sh
+./renew-certs.sh
 ```
 
 4. Add `renew-cert.sh` under cron, so that it renews
    automatically. Run it every day, it won't do anything if the
    certificate is not up for renewal.
+
+```
+crontab -e
+```
+
+In the editor that appear (vi), enter this line:
+
+```
+04 11 * * * /share/homes/admin/src/qnap-letsencrypt/renew-certs.sh
+```
+
+This runs the renew-certs.sh daily automatically. Change the time when
+the script runs if you need to.
