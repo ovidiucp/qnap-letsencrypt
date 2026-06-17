@@ -10,7 +10,7 @@ echo Script dir is $dir
 old=$(cd /etc/config/apache/ssl; ls -alF --time-style="+%Y-%m-%d-%H-%M-%S" *.pem | awk '{printf "%s@%s\n", $7, $6}')
 
 docker rm qnap-letsencrypt; \
-(cd /share/homes/ovidiu/src/qnap-letsencrypt; docker build -t qnap-letsencrypt:latest .) && \
+(cd $dir; docker build -t qnap-letsencrypt:latest .) && \
 docker run --name qnap-letsencrypt \
        -v $HOME/.acme.sh:/root/.acme.sh \
        -v /etc/config/apache/ssl:/etc/config/apache/ssl \
