@@ -25,9 +25,9 @@ your firewall.
 
 # Install git on your QNAP
 
-Git is not shipped on QNAP systems unfortunately. There are multiple
-ways to install git, but I prefer to not give allow untrusted app
-stores on my QNAP.
+Unfortunately, Git is not pre-installed on QNAP systems. While there
+are multiple ways to install it, I prefer to avoid enabling untrusted
+third-party app stores on my NAS.
 
 The simplest way is to run git from Docker container. Just do the following
 
