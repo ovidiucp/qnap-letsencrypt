@@ -151,19 +151,34 @@ will complain it sees them.
 ./renew-certs.sh
 ```
 
-4. Add `renew-cert.sh` under cron, so that it renews
-   automatically. Run it every day, it won't do anything if the
-   certificate is not up for renewal.
+4. Add `renew-certs.sh` under cron, so that it renews
+   automatically. Run it every day: it does nothing while the
+   certificate is not up for renewal and the web server already serves
+   it. QNAP rebuilds the live crontab from `/etc/config/crontab` at
+   boot, so add the line there rather than with `crontab -e`, then load
+   it:
 
 ```
-crontab -e
+echo '04 11 * * * /share/homes/admin/src/qnap-letsencrypt/renew-certs.sh >/share/homes/admin/renew-certs.log 2>&1' >> /etc/config/crontab
+crontab /etc/config/crontab && /etc/init.d/crond.sh restart
 ```
 
-In the editor that appear (vi), enter this line:
+Change the time when the script runs if you need to. Each run's output
+is in `/share/homes/admin/renew-certs.log`.
+
+5. If Plex Media Server is installed, the script also writes a PKCS#12
+   copy of the certificate for it and restarts Plex. Put the password
+   Plex is configured with in a file only root can read; the script
+   reads it from there:
 
 ```
-04 11 * * * /share/homes/admin/src/qnap-letsencrypt/renew-certs.sh
+(umask 077; printf '%s' 'your-p12-password' > /share/homes/admin/.plex-p12-pass)
+chmod 600 /share/homes/admin/.plex-p12-pass
 ```
 
-This runs the renew-certs.sh daily automatically. Change the time when
-the script runs if you need to.
+The certificates are issued by Let's Encrypt, through acme.sh's DNS
+API, with a 10-minute wait for the DNS record to be served before it
+is checked. The script installs a new certificate into the web server
+(`/etc/stunnel/stunnel.pem`, with its full chain) only after checking
+that it is valid, that it matches its key and that Apache accepts the
+configuration, and reloads the web server gracefully.
